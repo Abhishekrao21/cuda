@@ -1,4 +1,5 @@
-# CUDA Parallel Histogram Calculation
+# Create comprehensive README.md
+readme_content = '''# CUDA Parallel Histogram Calculation
 
 A high-performance CUDA-accelerated program for computing pixel intensity histograms on large batches of images. This project demonstrates parallel processing, GPU memory management, and efficient batch computation techniques.
 
@@ -244,3 +245,9 @@ This project is provided for educational purposes. Feel free to use and modify f
 2. "Programming Massively Parallel Processors" by Kirk & Hwu
 3. OpenCV Documentation for Image Processing
 4. CUDA Samples and Best Practices Guide
+'''
+
+with open("cuda_histogram_project/README.md", "w") as f:
+    f.write(readme_content)
+
+print("Created: README.md")

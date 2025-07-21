@@ -1,4 +1,5 @@
-# CUDA Parallel Histogram Calculation Makefile
+# Create Makefile
+makefile_content = '''# CUDA Parallel Histogram Calculation Makefile
 
 # Compiler settings
 NVCC = nvcc
@@ -94,3 +95,9 @@ help:
 	@echo "  help          - Show this help message"
 
 .PHONY: all directories clean install-deps generate-data run run-benchmark plot pipeline help
+'''
+
+with open("cuda_histogram_project/Makefile", "w") as f:
+    f.write(makefile_content)
+
+print("Created: Makefile")
