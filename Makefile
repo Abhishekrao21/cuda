@@ -11,12 +11,6 @@ CUDA_ARCH = -arch=sm_60
 OPENCV_CFLAGS = $(shell pkg-config --cflags opencv4)
 OPENCV_LIBS = $(shell pkg-config --libs opencv4)
 
-# Directories
-SRC_DIR = src
-BUILD_DIR = build
-OUTPUT_DIR = output
-DATA_DIR = data
-
 # Compiler flags
 NVCC_FLAGS = -std=c++17 $(CUDA_ARCH) -O3 -Xcompiler -fopenmp
 CXX_FLAGS = -std=c++17 -O3 -fopenmp
@@ -31,19 +25,13 @@ LIBDIRS = -L/usr/local/cuda/lib64
 LIBS = -lcuda -lcudart $(OPENCV_LIBS) -lm
 
 # Target executable
-TARGET = $(BUILD_DIR)/histogram_cuda
+TARGET = histogram_cuda
 
 # Source files
-CUDA_SRC = $(SRC_DIR)/histogram_cuda.cu
+CUDA_SRC = histogram_cuda.cu
 
 # Default target
-all: directories $(TARGET)
-
-# Create necessary directories
-directories:
-	@mkdir -p $(BUILD_DIR)
-	@mkdir -p $(OUTPUT_DIR)
-	@mkdir -p $(DATA_DIR)
+all: $(TARGET)
 
 # Build the main executable
 $(TARGET): $(CUDA_SRC)
@@ -51,8 +39,9 @@ $(TARGET): $(CUDA_SRC)
 
 # Clean build files
 clean:
-	rm -rf $(BUILD_DIR)/*
-	rm -rf $(OUTPUT_DIR)/*
+	rm -f $(TARGET)
+	rm -f *.png *.jpg *.jpeg *.bmp  # optional: delete images if generated
+	rm -f *.csv *.txt               # optional: delete output data
 
 # Install dependencies (Ubuntu/Debian)
 install-deps:
@@ -66,15 +55,15 @@ generate-data:
 
 # Run the program
 run: $(TARGET)
-	./$(TARGET) $(DATA_DIR) $(OUTPUT_DIR)
+	./$(TARGET) . .
 
 # Run with timing
 run-benchmark: $(TARGET)
-	time ./$(TARGET) $(DATA_DIR) $(OUTPUT_DIR)
+	time ./$(TARGET) . .
 
 # Plot results
 plot:
-	python3 plot_histograms.py $(OUTPUT_DIR)
+	python3 plot_histograms.py .
 
 # Full pipeline: build, generate data, run, and plot
 pipeline: all generate-data run plot
@@ -83,8 +72,7 @@ pipeline: all generate-data run plot
 help:
 	@echo "Available targets:"
 	@echo "  all           - Build the project"
-	@echo "  directories   - Create necessary directories"
-	@echo "  clean         - Clean build files"
+	@echo "  clean         - Clean build and generated files"
 	@echo "  install-deps  - Install system dependencies"
 	@echo "  generate-data - Generate sample test images"
 	@echo "  run           - Run the histogram computation"
@@ -93,4 +81,4 @@ help:
 	@echo "  pipeline      - Full build and run pipeline"
 	@echo "  help          - Show this help message"
 
-.PHONY: all directories clean install-deps generate-data run run-benchmark plot pipeline help
+.PHONY: all clean install-deps generate-data run run-benchmark plot pipeline help
